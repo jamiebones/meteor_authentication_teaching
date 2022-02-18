@@ -1,0 +1,11 @@
+.log-div{
+    display: flex;
+}
+
+.create-account{
+    padding: 30px;
+}
+
+.login-account{
+    padding: 30px;
+}
