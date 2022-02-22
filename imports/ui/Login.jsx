@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Meteor } from "meteor/meteor";
+import { useTracker } from "meteor/react-meteor-data";
+import CreateAccount from "./CreateAccount.jsx";
 
 export const Login = () => {
   const [username, setUsername] = useState("");
@@ -7,6 +9,17 @@ export const Login = () => {
   const [loginUsername, setLoginUsername] = useState("");
   const [loginpassword, setLoginPassword] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
+
+  const { user } = useTracker(() => {
+    const user = Meteor.user();
+    if (user) {
+      //get the user role
+      const role = Meteor.roleAssignment.find({ "user._id": user._id }).fetch();
+      console.log(role);
+    }
+
+    return { user };
+  }, []);
 
   const onTextChange = (e) => {
     const value = e.target.value;
@@ -48,16 +61,20 @@ export const Login = () => {
 
   const login = () => {
     if (loginUsername && loginpassword) {
-      Meteor.loginWithPassword(loginUsername, loginpassword, (error) => {
-        if (error) {
-          alert(`login failed : ${error.reason}`);
-        } else {
-          alert("login succesful");
-          setLoginPassword("");
-          setLoginUsername("");
-          setLoggedIn(true);
+      Meteor.loginWithPassword(
+        loginUsername,
+        loginpassword,
+        (error, userId) => {
+          if (error) {
+            alert(`login failed : ${error.reason}`);
+          } else {
+            alert(`login succesful`);
+            setLoginPassword("");
+            setLoginUsername("");
+            setLoggedIn(true);
+          }
         }
-      });
+      );
     }
   };
 
@@ -91,7 +108,7 @@ export const Login = () => {
         <br />
 
         <button type="button" onClick={registerAccount}>
-          Register
+          Register Account
         </button>
       </div>
 
@@ -128,6 +145,8 @@ export const Login = () => {
           </div>
         )}
       </div>
+
+      {loggedIn && <CreateAccount />}
     </div>
   );
 };

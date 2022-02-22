@@ -9,3 +9,10 @@
 .login-account{
     padding: 30px;
 }
+
+.main-panel {
+   border: 2px solid green;
+   padding: 10px;
+   
+}
+
